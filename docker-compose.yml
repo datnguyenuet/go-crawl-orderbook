@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  db:
+    container_name: db
+    image: postgres:14-alpine
+    volumes: # REMOVE_ON_CI
+      - db-data:/var/lib/postgresql/data # REMOVE_ON_CI
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=bank
+    ports:
+      - "127.0.0.1:5435:5432"
+  api:
+    container_name: api
+    build:
+      context: .
+      target: dev
+#    restart: always
+    volumes:
+      - .:/app:rw,delegated
+    command: ["hello"]
+    depends_on:
+      - db
+volumes:
+  db-data:
+    driver: local
